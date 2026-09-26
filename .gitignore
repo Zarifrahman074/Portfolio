@@ -1,0 +1,9 @@
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+.vscode/
+
+# Original source files (already copied into assets/)
+/Profile.jpeg
+/N M Zarif Rahman_MSC.pdf
