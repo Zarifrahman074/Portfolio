@@ -7,8 +7,52 @@
   var progressBar = document.getElementById('progressBar');
   var backToTop = document.getElementById('backToTop');
   var yearEl = document.getElementById('year');
+  var themeToggle = document.getElementById('themeToggle');
+  var THEME_KEY = 'zr-portfolio-theme';
+
+  /* ---------------- Rotating hero role words ---------------- */
+  var roleWords = document.querySelectorAll('.role-word');
+  if (roleWords.length) {
+    var roleIndex = 0;
+    roleWords[0].classList.add('is-active');
+    setInterval(function () {
+      if (document.hidden) return;
+      var current = roleWords[roleIndex];
+      var nextIndex = (roleIndex + 1) % roleWords.length;
+      var next = roleWords[nextIndex];
+      current.classList.remove('is-active');
+      current.classList.add('is-leaving');
+      next.classList.add('is-active');
+      setTimeout(function () { current.classList.remove('is-leaving'); }, 500);
+      roleIndex = nextIndex;
+    }, 2000);
+  }
 
   if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  /* ---------------- Theme toggle (dark/light) ---------------- */
+  function reflectTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (themeToggle) {
+      themeToggle.setAttribute('aria-pressed', String(isLight));
+      themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
+    }
+  }
+  reflectTheme();
+
+  if (themeToggle) {
+    themeToggle.addEventListener('click', function () {
+      var root = document.documentElement;
+      var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      if (next === 'light') {
+        root.setAttribute('data-theme', 'light');
+      } else {
+        root.removeAttribute('data-theme');
+      }
+      try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+      reflectTheme();
+    });
+  }
 
   /* ---------------- Header scroll state + progress bar ---------------- */
   function onScroll() {
@@ -142,11 +186,12 @@
       .to(heroReveals, { opacity: 1, y: 0, duration: 0.9, stagger: 0.12 });
 
     document.querySelectorAll('.section .reveal, .stats-strip.reveal').forEach(function (el) {
+      var isTimelineItem = el.classList.contains('timeline-item');
       gsap.to(el, {
         opacity: 1,
         y: 0,
-        duration: 0.8,
-        ease: 'power3.out',
+        duration: isTimelineItem ? 1.6 : 0.8,
+        ease: isTimelineItem ? 'power2.out' : 'power3.out',
         scrollTrigger: {
           trigger: el,
           start: 'top 85%',

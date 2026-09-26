@@ -7,3 +7,7 @@ desktop.ini
 # Original source files (already copied into assets/)
 /Profile.jpeg
 /N M Zarif Rahman_MSC.pdf
+
+# Local tooling / chat scratch files, not part of the site
+/.claude/
+/image.png
